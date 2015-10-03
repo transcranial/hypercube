@@ -1,5 +1,7 @@
 # hypercube
 
-A simple hypercube animation created in three.js.
+A simple hypercube/tesseract animation created in three.js.
 
-![hypercube](hypercube.gif)
+<p align="center">
+  <img src="hypercube.gif" />
+</p>
