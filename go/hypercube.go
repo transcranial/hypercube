@@ -2,6 +2,7 @@ package main
 
 import "github.com/fogleman/ln/ln"
 //import "math"
+import "fmt"
 
 func CalcPath(p1 ln.Vector, p2 ln.Vector, p3 ln.Vector, p4 ln.Vector, t float64) ln.Vector {
 
@@ -103,7 +104,7 @@ func (c *Hypercube) Contains(v ln.Vector, f float64) bool {
 }
 
 func (c *Hypercube) Intersect(r ln.Ray) ln.Hit {
-        /*min, max := ln.Vector{-1,-1,-1}, ln.Vector{ 1, 1, 1}
+        /*min, max := c.Vertices[0], c.Vertices[6]
 	n := min.Sub(r.Origin).Div(r.Direction)
 	f := max.Sub(r.Origin).Div(r.Direction)
 	n, f = n.Min(f), n.Max(f)
@@ -143,12 +144,8 @@ func (c *Hypercube) Paths() ln.Paths {
 }
 
 func main() {
-        hc := NewHypercube(0.0)
         
-        scene := ln.Scene{}
-        scene.Add(hc)
-
-        eye := ln.Vector{4, 3, 2}         // camera position
+        eye := ln.Vector{-4, 3, 2}        // camera position
         center := ln.Vector{0, 0, 0}      // camera looks at
         up := ln.Vector{0, 0, 1}          // up direction
         width := 1024.0                   // rendered width
@@ -157,9 +154,19 @@ func main() {
         znear := 0.1                      // near z plane
         zfar := 10.0                      // far z plane
         step := 0.01                      // how finely to chop the paths for visibility testing
+        
+        var scene ln.Scene
+        var paths ln.Paths
+        var t float64
+        
+        for i := 0; i < 125; i++ {
+                t = float64(i) / 125.0
+                
+                scene = ln.Scene{}
+                scene.Add(NewHypercube(t))
+                paths = scene.Render(eye, center, up, width, height, fovy, znear, zfar, step)
 
-        paths := scene.Render(eye, center, up, width, height, fovy, znear, zfar, step)
-
-	paths.WriteToPNG("hypercube.png", width, height)
-	//paths.WriteToSVG("hypercube.svg", width, height)
+        	paths.WriteToSVG(fmt.Sprintf("hypercube_%03d.svg", i), width, height)
+                
+        }
 }
